@@ -1,0 +1,146 @@
+export const fakeData = [
+  {
+    name: "Dr. Alice Johnson",
+    academicRank: "PROFESSOR IV",
+    unit: "BSED-ENGLISH",
+    college: "CAS",
+    email: "alice.johnson@university.edu",
+    role: "Faculty",
+  },
+  {
+    name: "Prof. Mark Smith",
+    academicRank: "ASSOCIATE PROFESSOR II",
+    unit: "BSED-MATH",
+    college: "COE",
+    email: "mark.smith@university.edu",
+    role: "Coordinator",
+  },
+  {
+    name: "Dr. Emily Davis",
+    academicRank: "UNIVERSITY PROFESSOR",
+    unit: "BSED-SOCIAL STUDIES",
+    college: "CAS",
+    email: "emily.davis@university.edu",
+    role: "Admin",
+  },
+  {
+    name: "Mr. John Brown",
+    academicRank: "ASSISTANT PROFESSOR III",
+    unit: "BSED-FILIPINO",
+    college: "CME",
+    email: "john.brown@university.edu",
+    role: "Faculty",
+  },
+  {
+    name: "Dr. Sarah Wilson",
+    academicRank: "PROFESSOR VI",
+    unit: "BSED-SCIENCE",
+    college: "CAS",
+    email: "sarah.wilson@university.edu",
+    role: "Admin",
+  },
+  {
+    name: "Ms. Jessica Taylor",
+    academicRank: "ASSISTANT PROFESSOR I",
+    unit: "IT",
+    college: "CME",
+    email: "jessica.taylor@university.edu",
+    role: "Coordinator",
+  },
+  {
+    name: "Dr. Michael Garcia",
+    academicRank: "ASSOCIATE PROFESSOR V",
+    unit: "BAPOS/SOCIAL SCIENCE",
+    college: "COE",
+    email: "michael.garcia@university.edu",
+    role: "Faculty",
+  },
+  {
+    name: "Prof. Karen Martinez",
+    academicRank: "PROFESSOR III",
+    unit: "BACOMM",
+    college: "CAS",
+    email: "karen.martinez@university.edu",
+    role: "Admin",
+  },
+  {
+    name: "Mr. David Lee",
+    academicRank: "INSTRUCTOR II",
+    unit: "BPED",
+    college: "CME",
+    email: "david.lee@university.edu",
+    role: "Faculty",
+  },
+  {
+    name: "Dr. Olivia Hernandez",
+    academicRank: "ASSISTANT PROFESSOR V",
+    unit: "HM/TM",
+    college: "COE",
+    email: "olivia.hernandez@university.edu",
+    role: "Coordinator",
+  },
+];
+
+export const fakeLineChartData = [
+  {
+    name: "CAS",
+    "Research Production": 45,
+    "Attendance to Research": 60,
+    Produciton: 80,
+    "Other Research Involvement": 55,
+    "Creative Works": 40,
+    Citations: 120,
+  },
+  {
+    name: "CME",
+    "Research Production": 35,
+    "Attendance to Research": 50,
+    Produciton: 75,
+    "Other Research Involvement": 48,
+    "Creative Works": 38,
+    Citations: 110,
+  },
+  {
+    name: "COE",
+    "Research Production": 50,
+    "Attendance to Research": 70,
+    Produciton: 90,
+    "Other Research Involvement": 60,
+    "Creative Works": 45,
+    Citations: 140,
+  },
+];
+
+export type fakeDataLineChart = typeof fakeLineChartData;
+
+export const fakeAreaChartData = [
+  {
+    name: "CAS",
+    "Research Production": 47,
+    "Attendance to Research": 63,
+    Production: 85,
+    "Other Research Involvement": 52,
+    "Creative Works": 37,
+    Citations: 50,
+  },
+  {
+    name: "CME",
+    "Research Production": 29,
+    "Attendance to Research": 55,
+    Production: 71,
+    "Other Research Involvement": 43,
+    "Creative Works": 42,
+    Citations: 101,
+  },
+  {
+    name: "COE",
+    "Research Production": 53,
+    "Attendance to Research": 78,
+    Production: 95,
+    "Other Research Involvement": 67,
+    "Creative Works": 50,
+    Citations: 158,
+  },
+];
+
+export type AreaChartDataType = (typeof fakeAreaChartData)[number];

@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Inter', sans-serif;
+    @apply scrollbar-thin scrollbar-track-[#f1f1f1] scrollbar-thumb-[#c1c1c1]
+  }
+
+  body {
+    background: #F5F5FC;
+  }
+
+
+  h1 {
+    @apply text-xl font-medium;
+  }
+}
+
+@layer utilities {
+  .shadowBot {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}

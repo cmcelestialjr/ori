@@ -1,0 +1,48 @@
+{
+  "name": "laravel-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "autoprefixer": "^10.4.17",
+    "axios": "^1.6.7",
+    "laravel-vite-plugin": "^1.0",
+    "postcss": "^8.4.35",
+    "tailwind-scrollbar": "^3.1.0",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.2.2",
+    "vite": "^6.3.2"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^4.1.0",
+    "@react-pdf/renderer": "^4.3.0",
+    "@tanstack/react-query": "^4.36.1",
+    "dayjs": "^1.11.13",
+    "file-saver": "^2.0.5",
+    "framer-motion": "^11.11.7",
+    "laravel-echo": "^2.0.2",
+    "pusher-js": "^8.4.0",
+    "react": "^18.2.0",
+    "react-calendar": "^5.1.0",
+    "react-csv": "^2.2.2",
+    "react-data-table-component": "^7.6.2",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.3.5",
+    "react-hook-form": "^7.54.2",
+    "react-icons": "^5.3.0",
+    "react-router-dom": "^7.5.2",
+    "react-toastify": "^11.0.5",
+    "recharts": "^2.15.1",
+    "recharts-to-png": "^2.4.0",
+    "relative-time": "^1.0.0",
+    "zod": "^3.24.2"
+  }
+}
