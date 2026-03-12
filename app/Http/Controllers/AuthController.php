@@ -7,6 +7,8 @@ use App\Enums\RoleEnum;
 use Illuminate\Support\Facades\Hash;
 use App\Traits\useFileHandler;
 use App\Http\Requests\LoginRequest;
+use App\Models\College;
+use App\Models\Unit;
 use App\Traits\HttpResponses;
 use Error;
 use Illuminate\Http\Request;
@@ -39,6 +41,23 @@ class AuthController extends Controller
         if (!$user) {
             return redirect('/login?error=invalid_gateway_auth');
         }
+
+        if($user->college == '' || $user->college == NULL){
+            $college = College::find($request->college);
+            if($college){
+                $user->college = $college->college;
+                $user->save();
+            }
+        }
+
+        if($user->unit == '' || $user->unit == NULL){
+            $unit = Unit::find($request->unit);
+            if($unit){
+                $user->unit = $unit->unit;
+                $user->save();
+            }
+        }
+
 
         // Log the user into the 'web' guard (Sanctum uses this session)
         Auth::login($user);
