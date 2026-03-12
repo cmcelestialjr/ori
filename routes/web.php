@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Storage;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/validate', [AuthController::class, 'accessGateway']);
+
 Route::get('local/temp/{path}', function (string $path){
     
     $filePath = Storage::disk('local')->path('documents/'.$path);

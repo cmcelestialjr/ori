@@ -54,6 +54,7 @@ export type UserDataTable = {
   college: string;
   email: string;
   coordinator: boolean;
+  is_admin: boolean;
   totalPoints: number | null;
   rating: string;
 };

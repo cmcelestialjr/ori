@@ -96,6 +96,28 @@ export default function AuthContextProvider({
     if (!isUserLoading) {
       if (userData) {
         setUser(userData);
+
+        // --- GATEWAY AUTO-LOGIN LOGIC ---
+        // If the user exists in the session but no role is active yet
+        if (!activeRole) {
+          const roles = userData.roles;
+          
+          if (roles && roles.length === 1) {
+            // 1. Auto-assign the single role
+            const roleName = roles[0].name;
+            setActiveRole(roleName);
+            
+            // 2. Redirect to dashboard if they are on root or login page
+            if (window.location.pathname === '/' || window.location.pathname === '/login') {
+              window.location.replace(redirectLink[roleName]);
+            }
+          } else if (roles && roles.length > 1) {
+            // Multiple roles — trigger the selection modal
+            setPendingRoleSelection(true);
+          }
+        }
+        // ---------------------------------
+
       } else if (
         isUserError &&
         axios.isAxiosError(userError) &&
@@ -107,7 +129,7 @@ export default function AuthContextProvider({
       }
       setInitialLoadCompleted(true);
     }
-  }, [userData, isUserLoading, isUserError, userError]);
+  }, [userData, isUserLoading, isUserError, userError, activeRole]);
 
   useEffect(() => {
     setStoredUser(user);

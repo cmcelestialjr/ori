@@ -20,6 +20,37 @@ class AuthController extends Controller
     use HttpResponses;
     use useFileHandler;
 
+    public function accessGateway(Request $request)
+    {
+        $token = $request->query('token');
+        $username = $request->query('username'); // Assuming this is 'id_no'
+        // You can also capture $college and $unit if you need to save them to the user session
+        
+        if (!$token || !$username) {
+            return redirect('/login?error=missing_params');
+        }
+
+        // Security check: Find user by ID and matching the token provided by the central system
+        $user = User::where('id_no', $username)
+                    ->where('remember_token', $token) // Ensure the central system sets this token
+                    ->with('roles:id,name')
+                    ->first();
+
+        if (!$user) {
+            return redirect('/login?error=invalid_gateway_auth');
+        }
+
+        // Log the user into the 'web' guard (Sanctum uses this session)
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        // Optionally store the college/unit in the session for the SPA to read later via an API
+        session(['active_college' => $request->query('college'), 'active_unit' => $request->query('unit')]);
+        
+        // Redirect to the frontend root
+        return redirect('/');
+    }
+
     public function login(LoginRequest $req)
     {
       $req->validated($req->all());

@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaUsers, FaClipboardList, FaCog, FaChevronDown } from 'react-icons/fa';
 import { MdDashboard } from "react-icons/md";
 import Logout from './util/Logout';
+import RoleSwitcher from './ui/RoleSwitcher';
 
 // react icon
 
@@ -132,7 +133,11 @@ const Sidebar = () => {
           </li>
 
           <li>
-            <Logout />
+            <RoleSwitcher />
+          </li>
+
+          <li>
+            <Logout style={''}  />
           </li>
         </ul>
       </nav>

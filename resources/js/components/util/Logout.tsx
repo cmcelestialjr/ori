@@ -12,16 +12,19 @@ const Logout = ({ style }: { style: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
-  const { setUser, setActiveRole } = useAuthContextProvider();
+ // const { setUser, setActiveRole } = useAuthContextProvider();
 
   const handleLogout = async () => {
     setIsLoading(true);
     try {
       await api.post("/api/logout");
       toast.success("Successfully logged out.");
-      setUser(null);
-      setActiveRole(null);
-      navigate("/login");
+      sessionStorage.removeItem("auth-user");
+      sessionStorage.removeItem("active-role");
+      //navigate("/login");
+      const targetUrl = `${window.location.protocol}//${window.location.hostname}/systems`;      
+      window.location.href = targetUrl;
+
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {

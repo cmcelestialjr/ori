@@ -50,6 +50,7 @@ class UserController extends Controller
         $user->name = $user->getFullName();
         $user->rating = $this->rating($user->totalPoints ?? 0);
         $user->coordinator = $user->hasRole(RoleEnum::RESEARCH_COORDINATOR);
+        $user->is_admin = $user->hasRole(RoleEnum::ADMIN);
 
         return $user;
     });
@@ -107,20 +108,28 @@ class UserController extends Controller
         return $this->success($user, 'Faculty Updated Successfully');
     }
 
-    public function assignCoordinatorRole(User $user)
+    public function assignRole(User $user, Request $request)
     {
-        $user->assignRole(RoleEnum::RESEARCH_COORDINATOR);
+        $request->validate([
+            'role' => 'required|string|in:research-coordinator,admin',
+        ]);
+
+        $user->assignRole($request->role);
         $user->load('roles:id,name');
 
-        return $this->success($user, 'Coordinator role assigned successfully');
+        return $this->success($user, ucfirst($request->role) . ' role assigned successfully');
     }
 
-    public function revokeCoordinatorRole(User $user)
+    public function revokeRole(User $user, Request $request)
     {
-        $user->removeRole(RoleEnum::RESEARCH_COORDINATOR);
+        $request->validate([
+            'role' => 'required|string|in:research-coordinator,admin',
+        ]);
+
+        $user->removeRole($request->role);
         $user->load('roles:id,name');
 
-        return $this->success($user, 'Coordinator role removed successfully');
+        return $this->success($user, ucfirst($request->role) . ' role removed successfully');
     }
 
     public function store(AddFacultyRequest $req)

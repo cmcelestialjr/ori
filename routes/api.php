@@ -153,8 +153,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/participation-to-research/points', [ParticipationToResearchController::class, 'getPoints']);
     Route::put('/participation-to-research/{point}/update', [ParticipationToResearchController::class, 'update'])->middleware('role:admin');
 
-    Route::post('/faculty/{user}/update-role', [UserController::class, 'assignCoordinatorRole'])->middleware('role:admin');
-    Route::delete('/faculty/{user}/remove-role', [UserController::class, 'revokeCoordinatorRole'])->middleware('role:admin');
+    Route::post('/faculty/{user}/update-role', [UserController::class, 'assignRole'])->middleware('role:admin');
+    Route::delete('/faculty/{user}/remove-role', [UserController::class, 'revokeRole'])->middleware('role:admin');
 
     //college and unit
     Route::get('/colleges', [CollegeController::class, 'index'])->middleware('permission:manage-college');

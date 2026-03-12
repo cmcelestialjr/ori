@@ -8,7 +8,6 @@ import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { UserDataTable } from "../../types";
 import api from "../../../api/axios";
-import AddCoordinatorModal from "./AddCoordinatorModal";
 import ConfirmationModal from "../../../shared/components/ConfirmationModal";
 import { useDeleteUser } from "../../../../hooks/hooks";
 
@@ -18,66 +17,82 @@ type FacultyTableProps = {
   loading: boolean;
   refetch: () => void;
 };
+
+const roleLabels: Record<string, string> = {
+  "research-coordinator": "Research Coordinator",
+  admin: "Administrator",
+};
+
 const FacultyTable: React.FC<FacultyTableProps> = ({
   data,
   filter,
   loading,
   refetch,
 }) => {
-  const [openModal, setOpenModal] = useState(false);
-  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
+  const [openPromoteModal, setOpenPromoteModal] = useState(false);
+  const [openRevokeModal, setOpenRevokeModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [selectedRole, setSelectedRole] = useState<string>("");
   const [isLoading, setLoading] = useState(false);
 
   const { handleDelete } = useDeleteUser();
 
-  const handleCoordinatorChange = (
+  const handleRoleToggle = (
     e: React.ChangeEvent<HTMLInputElement>,
     id: number,
+    role: string,
   ) => {
+    setSelectedUserId(id);
+    setSelectedRole(role);
     if (e.target.checked) {
-      setSelectedUserId(id);
-      setOpenModal(true);
+      setOpenPromoteModal(true);
     } else {
-      setSelectedUserId(id);
-      setOpenConfirmationModal(true);
+      setOpenRevokeModal(true);
     }
   };
 
-  const handleRemoveCoordinator = async () => {
-    if (!selectedUserId) return;
+  const handleAssignRole = async () => {
+    if (!selectedUserId || !selectedRole) return;
     setLoading(true);
     try {
-      await api.delete(`/api/faculty/${selectedUserId}/remove-role`);
-      setLoading(false);
-      setOpenConfirmationModal(false);
+      await api.post(`/api/faculty/${selectedUserId}/update-role`, {
+        role: selectedRole,
+      });
+      setOpenPromoteModal(false);
       setSelectedUserId(null);
+      setSelectedRole("");
       refetch();
     } catch (error) {
+      console.error(error);
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleAssignCoordinator = async () => {
-    if (!selectedUserId) return;
-
+  const handleRevokeRole = async () => {
+    if (!selectedUserId || !selectedRole) return;
     setLoading(true);
-
     try {
-      await api.post(`/api/faculty/${selectedUserId}/update-role`);
-      setLoading(false);
-      setOpenModal(false);
+      await api.delete(`/api/faculty/${selectedUserId}/remove-role`, {
+        data: { role: selectedRole },
+      });
+      setOpenRevokeModal(false);
       setSelectedUserId(null);
+      setSelectedRole("");
       refetch();
     } catch (error) {
+      console.error(error);
+    } finally {
       setLoading(false);
     }
   };
 
   const handleCancelModal = () => {
-    setOpenModal(false);
+    setOpenPromoteModal(false);
+    setOpenRevokeModal(false);
     setSelectedUserId(null);
+    setSelectedRole("");
   };
 
   const pointsSort = (rowA: UserDataTable, rowB: UserDataTable) => {
@@ -94,6 +109,8 @@ const FacultyTable: React.FC<FacultyTableProps> = ({
 
     return 0;
   };
+
+  const selectedFaculty = data?.find((user) => user.id === selectedUserId);
 
   const columns: TableColumn<UserDataTable>[] = [
     {
@@ -123,8 +140,24 @@ const FacultyTable: React.FC<FacultyTableProps> = ({
           <input
             className="cursor-pointer"
             type="checkbox"
-            onChange={(e) => handleCoordinatorChange(e, row.id)}
+            onChange={(e) =>
+              handleRoleToggle(e, row.id, "research-coordinator")
+            }
             checked={row.coordinator}
+          />
+        </div>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Admin",
+      cell: (row) => (
+        <div>
+          <input
+            className="cursor-pointer"
+            type="checkbox"
+            onChange={(e) => handleRoleToggle(e, row.id, "admin")}
+            checked={row.is_admin}
           />
         </div>
       ),
@@ -215,20 +248,29 @@ const FacultyTable: React.FC<FacultyTableProps> = ({
           />
         </div>
       </div>
-      <AddCoordinatorModal
-        faculty={data && data.find((user) => user.id === selectedUserId)}
-        loading={isLoading}
-        isOpen={openModal}
-        onCancel={() => handleCancelModal()}
-        onConfirm={() => handleAssignCoordinator()}
-      />
+
+      {/* Promote Role Modal */}
       <ConfirmationModal
-        isOpen={openConfirmationModal}
-        message="Are you sure you want to remove research-coordinator role?"
-        onCancel={() => setOpenConfirmationModal(false)}
-        onConfirm={() => handleRemoveCoordinator()}
+        isOpen={openPromoteModal}
+        title={`Promote to ${roleLabels[selectedRole] || selectedRole}`}
+        message={`Are you sure you want to assign the ${roleLabels[selectedRole] || selectedRole} role to ${selectedFaculty?.name}? They will be able to choose which dashboard to use on login.`}
+        onCancel={handleCancelModal}
+        onConfirm={handleAssignRole}
         type="submit"
+        confirmLabel={isLoading ? "Assigning..." : "Confirm"}
       />
+
+      {/* Revoke Role Modal */}
+      <ConfirmationModal
+        isOpen={openRevokeModal}
+        message={`Are you sure you want to remove the ${roleLabels[selectedRole] || selectedRole} role from ${selectedFaculty?.name}?`}
+        onCancel={handleCancelModal}
+        onConfirm={handleRevokeRole}
+        type="submit"
+        confirmLabel={isLoading ? "Removing..." : "Confirm"}
+      />
+
+      {/* Delete User Modal */}
       <ConfirmationModal
         isOpen={openDeleteModal}
         message="Are you sure you want to delete user?"
