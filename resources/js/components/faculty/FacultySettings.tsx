@@ -229,7 +229,7 @@ const FacultySettings = () => {
             <p className="mt-2 text-sm text-gray-500">Edit your profile</p>
             <div className="relative mt-6 inline-block sm:mt-8 lg:mt-10">
               <div
-                onClick={() => inputFile.current?.click()}
+                //onClick={() => inputFile.current?.click()}
                 className="relative h-20 w-20 cursor-pointer overflow-hidden rounded-full border-2 border-blue-500"
               >
                 <img
@@ -238,23 +238,25 @@ const FacultySettings = () => {
                   loading="lazy"
                   className="h-full w-full object-cover"
                 />
-                <input
+                {/* <input
                   onChange={handleUpload}
                   ref={inputFile}
                   type="file"
                   className="hidden"
                   accept="image/jpeg, image/png"
-                />
+                /> */}
               </div>
               <div
-                onClick={() => inputFile.current?.click()}
+                //onClick={() => inputFile.current?.click()}
                 className="absolute -bottom-1 -right-1 z-10 grid h-8 w-8 cursor-pointer place-content-center rounded-full bg-blue-500 hover:bg-blue-600"
               >
                 <FaCamera className="text-white" />
               </div>
             </div>
 
-            <form onSubmit={handleUpdate} className="mt-8 w-full lg:mt-10">
+            <form 
+            // onSubmit={handleUpdate} 
+            className="mt-8 w-full lg:mt-10">
                 <label
                   htmlFor="fname"
                   className="block font-semibold text-gray-900"
@@ -322,7 +324,7 @@ const FacultySettings = () => {
                   type="email"
                   className="mt-3 w-full rounded-sm border-b border-gray-400 px-3 py-3 text-sm font-semibold text-gray-800 focus:ring-gray-700"
                 />
-                <Button
+                {/* <Button
                   type="submit"
                   isDisabled={updateAccountLoading || !hasAccountChanges}
                   className={`mt-5 w-full rounded-sm px-2 py-2 text-sm font-semibold transition-all duration-200 lg:w-full ${
@@ -336,13 +338,13 @@ const FacultySettings = () => {
                   ) : (
                     "Update Account"
                   )}
-                </Button>
+                </Button> */}
               </form>
           </div>
         </div>
 
         {/* Password - Card on mobile/tablet, plain on desktop */}
-        <div className="flex-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm lg:self-start">
+        {/* <div className="flex-1 overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm lg:self-start">
           <div className="px-6 py-6 sm:px-9 sm:py-6 lg:px-5 lg:py-5">
             <h2 className="text-xl font-semibold">Password</h2>
             <p className="mt-2 text-sm text-gray-500">Change your password</p>
@@ -431,7 +433,7 @@ const FacultySettings = () => {
               )}
             </Button>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
