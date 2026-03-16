@@ -33,7 +33,7 @@ class AuthController extends Controller
         $centralUrl = env('VITE_CENTRAL_SYSTEM_URL');
         
         if (!$token || !$username) {
-            return redirect($centralUrl . 'ids/oris/home/n?error=invalid_gateway_auth');
+            return redirect($centralUrl . '/ids/oris/home/n?error=invalid_gateway_auth');
         }
 
         // Security check: Find user by ID and matching the token provided by the central system
@@ -44,7 +44,7 @@ class AuthController extends Controller
                     ->first();
 
         if (!$user) {
-            return redirect($centralUrl . 'ids/oris/home/n?error=invalid_gateway_auth');
+            return redirect($centralUrl . '/ids/oris/home/n?error=invalid_gateway_auth');
         }
 
         $user->update([

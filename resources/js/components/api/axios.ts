@@ -34,7 +34,7 @@ api.interceptors.response.use(
             sessionStorage.removeItem('active-role');
             
             // 2. Redirect to Central Systems Portal
-            const centralUrl = import.meta.env.VITE_CENTRAL_SYSTEM_URL + 'ids/oris/home/n' || '/login';
+            const centralUrl = import.meta.env.VITE_CENTRAL_SYSTEM_URL + '/ids/oris/home/n' || '/login';
             window.location.href = centralUrl; 
         }
         
