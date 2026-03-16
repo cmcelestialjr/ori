@@ -26,65 +26,74 @@ class AuthController extends Controller
 
     public function accessGateway(Request $request)
     {
-        $token = $request->query('token');
-        $username = $request->query('username'); // Assuming this is 'id_no'
-        // You can also capture $college and $unit if you need to save them to the user session
-
         $centralUrl = env('VITE_CENTRAL_SYSTEM_URL');
-        
-        if (!$token || !$username) {
+
+        try {
+            $token = $request->query('token');
+            $username = $request->query('username'); // Assuming this is 'id_no'
+
+            if (!$token || !$username) {
+                return redirect($centralUrl . '/ids/oris/home/n?error=invalid_gateway_auth');
+            }
+
+            // Security check: Find user by ID and matching the token provided by the central system
+            $user = User::where('id_no', $username)
+                        ->where('sso_token', $token) // Ensure the central system sets this token
+                        ->where('sso_token_expires_at', '>', now())
+                        ->with('roles:id,name')
+                        ->first();
+
+            if (!$user) {
+                return redirect($centralUrl . '/ids/oris/home/n?error=invalid_gateway_auth');
+            }
+
+            // Invalidate the SSO token immediately so it can't be used twice
+            $user->update([
+                'sso_token' => null,
+                'sso_token_expires_at' => null,
+            ]);
+
+            // Update College if missing
+            if ($user->college == '' || $user->college == NULL) {
+                $college = College::find($request->college);
+                if ($college) {
+                    $user->college = $college->college;
+                    $user->save();
+                }
+            }
+
+            // Update Unit if missing
+            if ($user->unit == '' || $user->unit == NULL) {
+                $unit = Unit::find($request->unit);
+                if ($unit) {
+                    $user->unit = $unit->unit;
+                    $user->save();
+                }
+            }
+
+            // Log the user into the 'web' guard (Sanctum uses this session)
+            Auth::login($user);
+
+            // Generate API token if your frontend requests it later
+            $token = $user->createToken('authToken')->plainTextToken;
+
+            // Regenerate session for security
+            $request->session()->regenerate();
+
+            // Optionally store the college/unit in the session for the SPA to read later via an API
+            session([
+                'active_college' => $request->query('college'), 
+                'active_unit' => $request->query('unit')
+            ]);
+            
+            // Redirect to the frontend root
+            return redirect('/login?email=' . urlencode($user->email) . '&sso=true');
+
+        } catch (\Throwable $e) {
+
+            // If ANYTHING fails (database crash, missing table, etc), gracefully kick them back
             return redirect($centralUrl . '/ids/oris/home/n?error=invalid_gateway_auth');
         }
-
-        // Security check: Find user by ID and matching the token provided by the central system
-        $user = User::where('id_no', $username)
-                    ->where('sso_token', $token) // Ensure the central system sets this token
-                    ->where('sso_token_expires_at', '>', now())
-                    ->with('roles:id,name')
-                    ->first();
-
-        if (!$user) {
-            return redirect($centralUrl . '/ids/oris/home/n?error=invalid_gateway_auth');
-        }
-
-        $user->update([
-            'sso_token' => null,
-            'sso_token_expires_at' => null,
-        ]);
-
-        if($user->college == '' || $user->college == NULL){
-            $college = College::find($request->college);
-            if($college){
-                $user->college = $college->college;
-                $user->save();
-            }
-        }
-
-        if($user->unit == '' || $user->unit == NULL){
-            $unit = Unit::find($request->unit);
-            if($unit){
-                $user->unit = $unit->unit;
-                $user->save();
-            }
-        }
-
-        $user->sso_token = null;
-        $user->sso_token_expires_at = null;
-        $user->save();
-
-        // Log the user into the 'web' guard (Sanctum uses this session)
-        Auth::login($user);
-        Auth::user();
-
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        $request->session()->regenerate();
-
-        // Optionally store the college/unit in the session for the SPA to read later via an API
-        session(['active_college' => $request->query('college'), 'active_unit' => $request->query('unit')]);
-        
-        // Redirect to the frontend root
-        return redirect('/login?email=' . urlencode($user->email) . '&sso=true');
     }
 
     public function login(LoginRequest $req)
