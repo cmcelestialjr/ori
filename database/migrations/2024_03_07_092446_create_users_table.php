@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('college')->nullable();
             $table->string('email');
             $table->string('password');
+			$table->string('sso_token')->nullable();
+			$table->timestamp('sso_token_expires_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
