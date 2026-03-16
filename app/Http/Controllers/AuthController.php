@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -34,13 +36,19 @@ class AuthController extends Controller
 
         // Security check: Find user by ID and matching the token provided by the central system
         $user = User::where('id_no', $username)
-                    ->where('remember_token', $token) // Ensure the central system sets this token
+                    ->where('sso_token', $token) // Ensure the central system sets this token
+                    ->where('sso_token_expires_at', '>', now())
                     ->with('roles:id,name')
                     ->first();
 
         if (!$user) {
             return redirect('/login?error=invalid_gateway_auth');
         }
+
+        $user->update([
+            'sso_token' => null,
+            'sso_token_expires_at' => null,
+        ]);
 
         if($user->college == '' || $user->college == NULL){
             $college = College::find($request->college);
@@ -67,12 +75,19 @@ class AuthController extends Controller
         session(['active_college' => $request->query('college'), 'active_unit' => $request->query('unit')]);
         
         // Redirect to the frontend root
-        return redirect('/');
+        return redirect('/login?email=' . urlencode($user->email) . '&sso=true');
     }
 
     public function login(LoginRequest $req)
     {
       $req->validated($req->all());
+
+      $throttleKey = Str::lower($req->email).'|'.$req->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return $this->error('', "Too many login attempts. Please try again in {$seconds} seconds.", 429);
+        }
 
       if(!Auth::attempt(['email' => $req->email, 'password' => $req->password])){
         return $this->error('', 'Login failed. Invalid email or password.', 500);

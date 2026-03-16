@@ -5,15 +5,17 @@ import { useAuthContextProvider } from "../../hooks/hooks";
 
 export default function GuestLayout() {
   const navigate = useNavigate();
-  const { user, activeRole, pendingRoleSelection } = useAuthContextProvider();
+  const { 
+    user, 
+    activeRole, 
+    pendingRoleSelection, 
+    setPendingRoleSelection // Make sure to destructure this
+  } = useAuthContextProvider();
 
   useEffect(() => {
     if (!user) return;
 
-    // Don't redirect if user needs to pick a role first
-    if (pendingRoleSelection) return;
-
-    // If activeRole is set (returning user), redirect to that dashboard
+    // If activeRole is already set, redirect to that dashboard
     if (activeRole) {
       navigate(redirectLink[activeRole]);
       return;
@@ -22,8 +24,16 @@ export default function GuestLayout() {
     // Single role user — redirect directly
     if (user.roles.length === 1) {
       navigate(redirectLink[user.roles[0].name]);
+      return;
     }
-  }, [user, activeRole, pendingRoleSelection, navigate]);
+
+    // SSO / Returning User with Multiple Roles:
+    // If they have multiple roles, no active role, and the modal isn't open yet, trigger it!
+    if (user.roles.length > 1 && !pendingRoleSelection) {
+      setPendingRoleSelection(true);
+    }
+
+  }, [user, activeRole, pendingRoleSelection, navigate, setPendingRoleSelection]);
 
   return <Outlet />;
 }

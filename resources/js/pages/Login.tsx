@@ -1,4 +1,5 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom"; // Add useSearchParams
+import { useEffect } from "react"; // Add useEffect
 import { useAuthContextProvider } from "../hooks/hooks";
 import { InputPassword } from "../components/ui/InputPassword";
 import RoleSelectionModal from "../components/ui/RoleSelectionModal";
@@ -16,10 +17,23 @@ export default function Login() {
   } = useAuthContextProvider();
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams(); // Hook to read URL parameters
+
+  // Pre-fill the login fields if coming from the access gateway
+  useEffect(() => {
+    const ssoEmail = searchParams.get("email");
+    const isSso = searchParams.get("sso");
+
+    if (ssoEmail) {
+      setEmail(ssoEmail);
+    }
+    if (isSso) {
+      setPassword("••••••••"); // Dummy password for visual effect
+    }
+  }, [searchParams, setEmail, setPassword]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     handleLogin(navigate);
   };
 
@@ -27,6 +41,7 @@ export default function Login() {
     <div className="flex min-h-[calc(100svh-4.5rem)] items-center justify-center">
       <div className="max-w-[50rem] rounded-md bg-secondary px-10 py-16 shadow-custom">
         <form className="flex flex-col gap-10" onSubmit={handleSubmit}>
+          {/* ... existing form UI ... */}
           <h2 className="text-center text-3xl font-bold">
             Sign in to your account
           </h2>

@@ -2,8 +2,8 @@ import api from "../api/axios";
 import { FiLogOut } from "react-icons/fi";
 import { useState } from "react";
 import LoadingSpinner from "../shared/components/LoadingSpinner";
-import { useNavigate } from "react-router-dom";
-import { useAuthContextProvider } from "../../hooks/hooks";
+//import { useNavigate } from "react-router-dom";
+//import { useAuthContextProvider } from "../../hooks/hooks";
 import { useToast } from "../../hooks/useToast";
 import ConfirmationModal from "../shared/components/ConfirmationModal";
 
@@ -11,7 +11,7 @@ const Logout = ({ style }: { style: string }) => {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
  // const { setUser, setActiveRole } = useAuthContextProvider();
 
   const handleLogout = async () => {
