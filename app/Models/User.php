@@ -27,7 +27,9 @@ class User extends Authenticatable
         'academic_rank',
         'suffix',
         'email',
-        'password'
+        'password',
+        'sso_token',
+        'sso_token_expires_at'
     ];
 
     /**
