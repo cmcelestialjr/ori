@@ -66,6 +66,10 @@ class AuthController extends Controller
             }
         }
 
+        $user->sso_token = null;
+        $user->sso_token_expires_at = null;
+        $user->save();
+
 
         // Log the user into the 'web' guard (Sanctum uses this session)
         Auth::login($user);
