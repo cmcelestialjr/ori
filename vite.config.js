@@ -5,10 +5,10 @@ import path from 'path';
 
 export default defineConfig({
     server: {
+        host: '0.0.0.0',
+        port: 5173,
         hmr: {
-            host: 'localhost',
-            port: 5173,
-            protocol: 'ws',
+            host: '10.5.0.239',
         },
     },
     plugins: [
