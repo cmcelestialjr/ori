@@ -29,7 +29,7 @@ class User extends Authenticatable
         'email',
         'password',
         'sso_token',
-        'sso_token_expires_at'
+        'sso_token_expires_at',
     ];
 
     /**
