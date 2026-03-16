@@ -1,4 +1,3 @@
-// In your api/axios.ts file
 import axios from "axios";
 
 let initialLoadCompleted = false;
@@ -24,13 +23,23 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Global Error Handler
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Don't do full-page redirect on 401/419 - let ProtectedRoute handle auth
-    // via React Router (no refresh). Full redirect caused unwanted auto-refresh.
-    return Promise.reject(error);
-  },
+    (response) => response,
+    (error) => {
+        // If the user is unauthorized or their session expired...
+        if (error.response && (error.response.status === 401 || error.response.status === 419)) {
+            // 1. Clear local storage
+            sessionStorage.removeItem('auth-user');
+            sessionStorage.removeItem('active-role');
+            
+            // 2. Redirect to Central Systems Portal
+            const centralUrl = import.meta.env.VITE_CENTRAL_SYSTEM_URL || '/login';
+            window.location.href = centralUrl; 
+        }
+        
+        return Promise.reject(error);
+    }
 );
 
 export default api;

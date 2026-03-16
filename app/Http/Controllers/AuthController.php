@@ -29,9 +29,11 @@ class AuthController extends Controller
         $token = $request->query('token');
         $username = $request->query('username'); // Assuming this is 'id_no'
         // You can also capture $college and $unit if you need to save them to the user session
+
+        $centralUrl = env('VITE_CENTRAL_SYSTEM_URL');
         
         if (!$token || !$username) {
-            return redirect('https://10.5.0.239/ids/oris/home/n?error=invalid_gateway_auth');
+            return redirect($centralUrl . 'ids/oris/home/n?error=invalid_gateway_auth');
         }
 
         // Security check: Find user by ID and matching the token provided by the central system
@@ -42,7 +44,7 @@ class AuthController extends Controller
                     ->first();
 
         if (!$user) {
-            return redirect('https://10.5.0.239/ids/oris/home/n?error=invalid_gateway_auth');
+            return redirect($centralUrl . 'ids/oris/home/n?error=invalid_gateway_auth');
         }
 
         $user->update([
