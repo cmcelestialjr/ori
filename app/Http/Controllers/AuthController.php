@@ -69,6 +69,10 @@ class AuthController extends Controller
 
         // Log the user into the 'web' guard (Sanctum uses this session)
         Auth::login($user);
+        Auth::user();
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
         $request->session()->regenerate();
 
         // Optionally store the college/unit in the session for the SPA to read later via an API
