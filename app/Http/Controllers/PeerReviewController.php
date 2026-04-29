@@ -16,7 +16,7 @@ use App\Notifications\ResearchMonitoringFormNotification;
 use App\Traits\HttpResponses;
 use App\Traits\PointsRating;
 use App\Traits\useFileHandler;
-use App\Traits\useGeminiService;
+// use App\Traits\useGeminiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -25,7 +25,7 @@ use Exception;
 class PeerReviewController extends Controller
 {
     use HttpResponses;
-    use useGeminiService;
+    // use useGeminiService;
     use useFileHandler;
     use PointsRating;
 

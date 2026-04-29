@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Traits\HttpResponses;
-use App\Traits\useGeminiService;
-use App\Traits\useOCRservice;
+// use App\Traits\useGeminiService;
+// use App\Traits\useOCRservice;
 
 class FileUploadController extends Controller
 {
     use HttpResponses;
-    use useGeminiService;
-    use useOCRservice;
+    // use useGeminiService;
+    // use useOCRservice;
 
     public function uploadPublic(Request $req)
     {
@@ -40,94 +40,94 @@ class FileUploadController extends Controller
         return $this->success($filePaths, 'Documents Uploaded Successfully');
     }
 
-    public function certificate($involvement, $certificate)
-    {
-        $filePath = 'temp/'.$certificate;
+    // public function certificate($involvement, $certificate)
+    // {
+    //     $filePath = 'temp/'.$certificate;
 
-        if(!Storage::exists( $filePath)) {
-            return $this->error('', 'File not found', 500);
-        }
+    //     if(!Storage::exists( $filePath)) {
+    //         return $this->error('', 'File not found', 500);
+    //     }
 
-        $user = auth()->user();
+    //     $user = auth()->user();
 
-        $prompt = "Analyze this certificate and return to me the following propery in this format:
-            {
-                isCertificate: return true or false if the image is indeed a certificate,
-                date: if it's a cerificate, return the duration of date the event was held: example format (Jun 2, 2024 or Jun 2-4, 2024),
-                name: if it's a certificate, return the presenter name the certificate was given to otherwise null,
-                research_title: if it's a certificate, return the research title or topic of the certificate. Do not include the theme,
-                conference_name:if it's a certificate, return the conference or event name otherwise null,
-                attendance_nature: if it's a certficate, return the attendance nature of the person awarded by the certificate (prensenter, moderator, organizer, etc.).
-            }";
+    //     $prompt = "Analyze this certificate and return to me the following propery in this format:
+    //         {
+    //             isCertificate: return true or false if the image is indeed a certificate,
+    //             date: if it's a cerificate, return the duration of date the event was held: example format (Jun 2, 2024 or Jun 2-4, 2024),
+    //             name: if it's a certificate, return the presenter name the certificate was given to otherwise null,
+    //             research_title: if it's a certificate, return the research title or topic of the certificate. Do not include the theme,
+    //             conference_name:if it's a certificate, return the conference or event name otherwise null,
+    //             attendance_nature: if it's a certficate, return the attendance nature of the person awarded by the certificate (prensenter, moderator, organizer, etc.).
+    //         }";
 
-        $imagePath = Storage::disk('local')->path($filePath);
+    //     $imagePath = Storage::disk('local')->path($filePath);
 
-        if(mime_content_type($imagePath) === 'application/pdf') {
+    //     if(mime_content_type($imagePath) === 'application/pdf') {
 
-            $convertedImagePath = $this->convertPDFtoImage($imagePath);
+    //         $convertedImagePath = $this->convertPDFtoImage($imagePath);
 
-            $result = $this->ImagetoText($convertedImagePath, $prompt);
+    //         $result = $this->ImagetoText($convertedImagePath, $prompt);
 
-            $convertedImage = 'temp/'.basename($convertedImagePath);
+    //         $convertedImage = 'temp/'.basename($convertedImagePath);
 
-            Storage::delete($convertedImage);
+    //         Storage::delete($convertedImage);
 
-        } else {
+    //     } else {
 
-            $result = $this->ImagetoText($imagePath, $prompt);
+    //         $result = $this->ImagetoText($imagePath, $prompt);
 
-        }
+    //     }
 
 
-        $entities = json_decode(Str::between($result, '```json', '```'));
+    //     $entities = json_decode(Str::between($result, '```json', '```'));
 
-        if(!$entities->isCertificate){
-            return $this->error('', 'Invalid file. Please upload a certificate.', 403);
-        }
+    //     if(!$entities->isCertificate){
+    //         return $this->error('', 'Invalid file. Please upload a certificate.', 403);
+    //     }
 
-        //2024 for testing
-        if(!Str::contains($entities->date, '2024', true)){
-            return $this->error('', 'Invalid Certificate. Certificate must be within the current year.', 403);
-        }
+    //     //2024 for testing
+    //     if(!Str::contains($entities->date, '2024', true)){
+    //         return $this->error('', 'Invalid Certificate. Certificate must be within the current year.', 403);
+    //     }
 
-        $name = $user->getFullName();
+    //     $name = $user->getFullName();
 
-        similar_text($name, $entities->name, $p);
+    //     similar_text($name, $entities->name, $p);
 
-        if($p < 80){
-            return $this->error($p, 'Invalid certificate. Please upload your own certificate.', code: 403);
-        }
+    //     if($p < 80){
+    //         return $this->error($p, 'Invalid certificate. Please upload your own certificate.', code: 403);
+    //     }
 
-        if($involvement === '2') {
-            $exists = PresentedResearchProduction::where('conference_name', $entities->conference_name)->where('date_presented', $entities->date)->exists();
+    //     if($involvement === '2') {
+    //         $exists = PresentedResearchProduction::where('conference_name', $entities->conference_name)->where('date_presented', $entities->date)->exists();
 
-            if($exists) return $this->error('', 'Invalid file. You already submitted this certificate.', 403);
+    //         if($exists) return $this->error('', 'Invalid file. You already submitted this certificate.', 403);
 
-        };
+    //     };
 
-        if($involvement === '5') {
+    //     if($involvement === '5') {
 
-            if(Str::contains($entities->attendance_nature, 'presenter', true)){
+    //         if(Str::contains($entities->attendance_nature, 'presenter', true)){
 
-                return $this->error('','For research presentation, you can select Presented Research instead.', 403);
-            }
+    //             return $this->error('','For research presentation, you can select Presented Research instead.', 403);
+    //         }
 
-            $exists = ResearchAttendance::where('research_title', $entities->conference_name)->where('date',$entities->date)->where('attendance_nature', strtolower($entities->attendance_nature))->exists();
+    //         $exists = ResearchAttendance::where('research_title', $entities->conference_name)->where('date',$entities->date)->where('attendance_nature', strtolower($entities->attendance_nature))->exists();
 
-            if($exists) {
-                return $this->error($entities, 'Invalid file. You already submitted this certificate.', 403);
-            }
+    //         if($exists) {
+    //             return $this->error($entities, 'Invalid file. You already submitted this certificate.', 403);
+    //         }
 
-            // $multiple = ResearchAttendance::where([
-            //     ['research_title
+    //         // $multiple = ResearchAttendance::where([
+    //         //     ['research_title
                 
-            //     ', '=', $entities->conference_name],
-            //     ['date', '=', $entities->date]
-            // ])->exists();
-        }
+    //         //     ', '=', $entities->conference_name],
+    //         //     ['date', '=', $entities->date]
+    //         // ])->exists();
+    //     }
 
 
-        return $this->success($entities, 'Certificate is allowed.');
+    //     return $this->success($entities, 'Certificate is allowed.');
 
-    }
+    // }
 }

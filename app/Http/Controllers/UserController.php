@@ -51,7 +51,6 @@ class UserController extends Controller
         $user->rating = $this->rating($user->totalPoints ?? 0);
         $user->coordinator = $user->hasRole(RoleEnum::RESEARCH_COORDINATOR);
         $user->is_admin = $user->hasRole(RoleEnum::ADMIN);
-
         return $user;
     });
 

@@ -42,7 +42,7 @@ api.interceptors.response.use(
             if (activeRole === 'faculty') {
                 // If they are a regular user, send them to the Central System SSO
                 const baseUrl = import.meta.env.VITE_CENTRAL_SYSTEM_URL;
-                const centralUrl = baseUrl ? `${baseUrl}/ids/oris/home/n` : '/login';
+                const centralUrl = baseUrl ? `${baseUrl}/systems` : '/login';
                 
                 window.location.href = centralUrl; 
             } else {

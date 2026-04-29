@@ -33,7 +33,7 @@ class AuthController extends Controller
             $username = $request->query('username'); // Assuming this is 'id_no'
 
             if (!$token || !$username) {
-                return redirect($centralUrl . '/ids/oris/home/n?error=invalid_gateway_auth');
+                return redirect($centralUrl . '/systems?error=invalid_gateway_auth');
             }
 
             // Security check: Find user by ID and matching the token provided by the central system
@@ -44,7 +44,7 @@ class AuthController extends Controller
                         ->first();
 
             if (!$user) {
-                return redirect($centralUrl . '/ids/oris/home/n?error=invalid_gateway_auth');
+                return redirect($centralUrl . '/systems?error=invalid_gateway_auth');
             }
 
             // Invalidate the SSO token immediately so it can't be used twice
@@ -92,7 +92,7 @@ class AuthController extends Controller
         } catch (\Throwable $e) {
 
             // If ANYTHING fails (database crash, missing table, etc), gracefully kick them back
-            return redirect($centralUrl . '/ids/oris/home/n?error=invalid_gateway_auth');
+            return redirect($centralUrl . '/systems?error=invalid_gateway_auth');
         }
     }
 

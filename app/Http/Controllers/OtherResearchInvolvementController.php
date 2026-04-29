@@ -22,7 +22,7 @@ use App\Models\ResearchDocument;
 use App\Models\User;
 use App\Notifications\ResearchMonitoringFormNotification;
 use App\Traits\useFileHandler;
-use App\Traits\useGeminiService;
+// use App\Traits\useGeminiService;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Notification;
 class OtherResearchInvolvementController extends Controller
 {
     use HttpResponses;
-    use useGeminiService;
+    // use useGeminiService;
     use useFileHandler;
     use PointsRating;
 
@@ -135,64 +135,64 @@ class OtherResearchInvolvementController extends Controller
         }
     }
 
-    public function validateDocument(Request $request)
-    {
-        if(!Storage::disk('local')->exists($request->certificate)) {
-            return $this->error('', 'File not found', 500);
-        }
+    // public function validateDocument(Request $request)
+    // {
+    //     if(!Storage::disk('local')->exists($request->certificate)) {
+    //         return $this->error('', 'File not found', 500);
+    //     }
 
-        $user = auth()->user();
+    //     $user = auth()->user();
 
-        $fullName = $user->getFullName();
+    //     $fullName = $user->getFullName();
 
-        $path = Storage::disk('local')->path($request->certificate);
+    //     $path = Storage::disk('local')->path($request->certificate);
 
 
-                $prompt = 'I want to check if this image matches a specific document type. Here are the lists of documents you need to look:
-                    1. A special order document issued by Leyte Normal University,
-                    2. A certificate format document,
-                    3. A concept paper or proposal document of a research,
+    //             $prompt = 'I want to check if this image matches a specific document type. Here are the lists of documents you need to look:
+    //                 1. A special order document issued by Leyte Normal University,
+    //                 2. A certificate format document,
+    //                 3. A concept paper or proposal document of a research,
 
-                return a json format of the result:
-                {
-                    "valid": true / false : true if the image matches the any of document type, false otherwise,
+    //             return a json format of the result:
+    //             {
+    //                 "valid": true / false : true if the image matches the any of document type, false otherwise,
 
-                    if valid is true, provide these details:
-                    "data": {
-                        "date": Date of the document,
-                        "research_involvement": role of the user (adviser, statistician, panel, editor, etc),
-                        "name": Does the '.$fullName.' name appear in the document? Return the name if it does, otherwise return null,
-                }
+    //                 if valid is true, provide these details:
+    //                 "data": {
+    //                     "date": Date of the document,
+    //                     "research_involvement": role of the user (adviser, statistician, panel, editor, etc),
+    //                     "name": Does the '.$fullName.' name appear in the document? Return the name if it does, otherwise return null,
+    //             }
 
-                }';
-                if(mime_content_type($path) === 'application/pdf') {
+    //             }';
+    //             if(mime_content_type($path) === 'application/pdf') {
 
-                    $convertedImagePath = $this->convertPDFtoImage($path);
+    //                 $convertedImagePath = $this->convertPDFtoImage($path);
 
-                    $response = $this->ImagetoText($convertedImagePath, $prompt);
+    //                 $response = $this->ImagetoText($convertedImagePath, $prompt);
 
-                    $convertedImage = 'temp/'.basename($convertedImagePath);
+    //                 $convertedImage = 'temp/'.basename($convertedImagePath);
 
-                    Storage::delete($convertedImage);
+    //                 Storage::delete($convertedImage);
 
-                } else {
+    //             } else {
 
-                    $response = $this->ImagetoText($path, $prompt);
+    //                 $response = $this->ImagetoText($path, $prompt);
 
-                }
+    //             }
 
-                $entities = json_decode(Str::between($response, '```json', '```'));
+    //             $entities = json_decode(Str::between($response, '```json', '```'));
 
-                if(!$entities->valid) {
-                    return $this->error($entities, 'Invalid Document.', 400);
-                }
-                if(empty($entities->data->name)) {
-                    return $this->error($entities, 'Please upload your own research involvement.', 400);
-                }
+    //             if(!$entities->valid) {
+    //                 return $this->error($entities, 'Invalid Document.', 400);
+    //             }
+    //             if(empty($entities->data->name)) {
+    //                 return $this->error($entities, 'Please upload your own research involvement.', 400);
+    //             }
 
-                return $this->success(['entities' =>$entities], 'Valid intellectual property');
+    //             return $this->success(['entities' =>$entities], 'Valid intellectual property');
 
-    }
+    // }
     public function getPoints(Request $request)
     {
         if($request->funded_research) {

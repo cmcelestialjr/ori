@@ -15,7 +15,7 @@ use App\Notifications\ResearchMonitoringFormNotification;
 use App\Traits\HttpResponses;
 use App\Traits\PointsRating;
 use App\Traits\useFileHandler;
-use App\Traits\useGeminiService;
+// use App\Traits\useGeminiService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Notification;
 class IntellectualPropertyController extends Controller
 {
     use HttpResponses;
-    use useGeminiService;
+    // use useGeminiService;
     use useFileHandler;
     use PointsRating;
 
