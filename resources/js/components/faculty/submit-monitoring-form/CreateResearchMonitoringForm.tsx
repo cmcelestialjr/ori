@@ -21,7 +21,7 @@ import axios from "axios";
 import LoadingSpinner from "../../shared/components/LoadingSpinner";
 import { useToast } from "../../../hooks/useToast";
 import { useNavigate } from "react-router-dom";
-import { useValidateDocument } from "./useValidateDocument";
+// import { useValidateDocument } from "./useValidateDocument";
 import { useMutationResearchMonitoringForm } from "../../admin/monitoring-form/hooks/hook";
 
 export type FormData = {
@@ -29,7 +29,7 @@ export type FormData = {
   research_documents: string[];
   sdg_mappings: number[];
   agenda_mappings: number[];
-  selectedFile: number | null;
+  // selectedFile: number | null;
   completed: Completedresearchprod &
     Omit<Research, "id" | "user_id"> & { points: number };
   presented: Presentedresearchprod & { points: number };
@@ -66,7 +66,7 @@ const CreateResearchMonitoringForm = () => {
       research_documents: [],
       sdg_mappings: [],
       agenda_mappings: [],
-      selectedFile: null,
+      // selectedFile: null,
       completed: {
         //completed
         title: "",
@@ -171,7 +171,7 @@ const CreateResearchMonitoringForm = () => {
   const { data: involvementTypes, isLoading } =
     useGetResearchInvolvementTypes();
 
-  const { mutate: validateDoc, isLoading: loading } = useValidateDocument();
+  // const { mutate: validateDoc, isLoading: loading } = useValidateDocument();
 
   const { data: sdgAgenda } = useGetSdgAgenda();
 
@@ -198,19 +198,19 @@ const CreateResearchMonitoringForm = () => {
     };
   }, [isDirty]);
 
-  const research_docs = watch("research_documents");
-  const isSelectedFileIndex = watch("selectedFile");
-  const selectedFile =
-    isSelectedFileIndex !== null
-      ? research_docs[isSelectedFileIndex]
-      : undefined;
+  // const research_docs = watch("research_documents");
+  // const isSelectedFileIndex = watch("selectedFile");
+  // const selectedFile =
+  //   isSelectedFileIndex !== null
+  //     ? research_docs[isSelectedFileIndex]
+  //     : undefined;
   const involvementTypeSelected = watch("research_involvement_type");
-  const fileLabel =
-    involvementTypeSelected == 1 ||
-    involvementTypeSelected == 3 ||
-    involvementTypeSelected == 4
-      ? "research"
-      : "certificate";
+  // const fileLabel =
+  //   involvementTypeSelected == 1 ||
+  //   involvementTypeSelected == 3 ||
+  //   involvementTypeSelected == 4
+  //     ? "research"
+  //     : "certificate";
 
   const onSubmit = async (data: FormData) => {
     const validTypes = {
@@ -234,46 +234,7 @@ const CreateResearchMonitoringForm = () => {
       });
       return;
     }
-
-    if (isSelectedFileIndex == null) {
-      setError("selectedFile", {
-        message: `Please select your ${fileLabel} from your uploaded files.`,
-        type: "required",
-      });
-
-      return;
-    }
-    if (step === 1) {
-      validateDoc(
-        {
-          filePath: selectedFile as string,
-          fileLabel: fileLabel,
-          involvementType: involvementTypeSelected,
-        },
-        {
-          onSuccess: (resData) => {
-            setValue("sdg_mappings", resData.sdg);
-            setValue("agenda_mappings", resData.agenda);
-
-            if (fieldKey) {
-              setValue(fieldKey, {
-                ...data[fieldKey],
-                ...resData.entities,
-              });
-            }
-            setStep((prev) => prev + 1);
-          },
-          onError: (error) => {
-            if (axios.isAxiosError(error)) {
-              const message =
-                error.response?.data?.message ||
-                "Validation failed. Click Next to retry.";
-              toast.error(message);
-            }
-          },
-        },
-      );
-    } else if (step < 3) {
+    if (step <= 2) {
       setStep((prev) => prev + 1);
     } else {
       const payload: PayloadType = {
@@ -330,7 +291,7 @@ const CreateResearchMonitoringForm = () => {
       case 2:
         return (
           <SdgAgenda
-            selectedFile={selectedFile}
+            // selectedFile={selectedFile}
             control={control}
             sdgAgenda={sdgAgenda}
           />
@@ -385,15 +346,6 @@ const CreateResearchMonitoringForm = () => {
           </div>
         </form>
       </div>
-      <LoadingSpinner
-        isLoading={loading}
-        text={[
-          "Validating your document...",
-          "Selecting best SDG and Agenda...",
-          "Extracting details...",
-        ]}
-        delay={1000}
-      />
       <LoadingSpinner
         isLoading={submitLoading}
         text="Saving your document..."

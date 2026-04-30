@@ -48,11 +48,11 @@ const ResearchInvolvementType = ({
     defaultValue: 1,
   });
 
-  const { field: selectedFile } = useController({
-    name: "selectedFile",
-    control,
-    defaultValue: null,
-  });
+  // const { field: selectedFile } = useController({
+  //   name: "selectedFile",
+  //   control,
+  //   defaultValue: null,
+  // });
 
   const handleUpload = async (files: File[]) => {
     const formImage = new FormData();
@@ -91,20 +91,14 @@ const ResearchInvolvementType = ({
   const handleRemoveFile = (index: number) => {
     setFileList(fileList.filter((_, i) => i !== index));
     research_docs.onChange(research_docs.value.filter((_, i) => i !== index));
-
-    if (index === selectedFile.value) {
-      selectedFile.onChange(null);
-    } else if (selectedFile.value) {
-      selectedFile.onChange(selectedFile.value - 1);
-    }
   };
 
-  const fileLabel =
-    involvementType.value == 1 ||
-    involvementType.value == 3 ||
-    involvementType.value == 4
-      ? "research"
-      : "certificate";
+  // const fileLabel =
+  //   involvementType.value == 1 ||
+  //     involvementType.value == 3 ||
+  //     involvementType.value == 4
+  //     ? "research"
+  //     : "certificate";
 
   return (
     <div className="flex w-full flex-col items-start justify-center">
@@ -190,11 +184,11 @@ const ResearchInvolvementType = ({
 
       <div className="mt-2 w-full">
         <p className="text-md font-semibold">Uploaded files</p>
-        <p className="text-md my-2 text-gray-800">
+        {/* <p className="text-md my-2 text-gray-800">
           Important: Click to select your{" "}
           <span className="text-blue-500">{fileLabel}</span> from the uploaded
           files.
-        </p>
+        </p> */}
 
         {fileList.length === 0 ? (
           <>
@@ -231,19 +225,9 @@ const ResearchInvolvementType = ({
             {fileList.map((file, index) => (
               <div key={index} className="my-5 flex justify-between gap-2">
                 <div className="flex w-full gap-x-1.5 border-b border-b-gray-400 pb-1">
-                  <input
-                    id={`selected-${index}`}
-                    type="checkbox"
-                    checked={selectedFile.value === index}
-                    onClick={() => selectedFile.onChange(index)}
-                    className="size-5 rounded-sm accent-blue-500"
-                  />
-                  <label
-                    className="line-clamp-1 cursor-pointer"
-                    htmlFor={`selected-${index}`}
-                  >
+                  <p className="line-clamp-1">
                     {file.name} - {formatBytes(file.size)}
-                  </label>
+                  </p>
                 </div>
                 <button
                   className="text-red-500"
@@ -253,9 +237,9 @@ const ResearchInvolvementType = ({
                 </button>
               </div>
             ))}
-            <p className="my-2 text-wrap text-red-500">
+            {/* <p className="my-2 text-wrap text-red-500">
               {errors.selectedFile?.message}
-            </p>
+            </p> */}
           </>
         )}
       </div>

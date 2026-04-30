@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { MdImage } from "react-icons/md";
 import { SDGMapping, AgendaMapping } from "../../shared/types/types";
 
 interface CardProps {
@@ -7,52 +9,60 @@ interface CardProps {
 }
 
 /**
- * UPDATED: Robust Helper for Faculty Side
- * This version is more resilient to different path formats from the DB.
+ * Resolves an image_path from the DB to a full URL.
+ *
+ * Two possible formats exist in the DB:
+ *  1. Seeder images  → "images/sdg/sdg1.png"  (live in public/images/, served directly)
+ *  2. Admin uploads  → "images/some-file.png"  (live in storage/app/public/, need /storage/ prefix)
+ *
+ * We distinguish them by checking whether the path starts with "images/sdg/" or "images/agenda/"
+ * (seeder convention). Everything else is assumed to be a Storage::disk('public') upload.
  */
-const getImageUrl = (path: string | null | undefined) => {
-  if (!path) return "https://via.placeholder.com/150";
-  
-  // 1. If it's a full URL string
-  if (path.startsWith("http")) {
-      // Force port 8000 if it's pointing to localhost/127.0.0.1 without the port
-      if (path.includes("localhost") || path.includes("127.0.0.1")) {
-         // This regex finds 'localhost' or '127.0.0.1' and ensures it's followed by :8000
-         return path.replace(/http:\/\/(localhost|127\.0\.0\.1)(:\d+)?/, "http://localhost:8000");
-      }
-      return path;
+const BASE_URL = "http://localhost:8000";
+
+const getImageUrl = (path: string | null | undefined): string => {
+  if (!path) return "";
+
+  if (path.startsWith("http")) return path;
+
+  const normalised = path.startsWith("/") ? path.slice(1) : path;
+
+  const isPublicStaticImage =
+    normalised.startsWith("images/sdg/") ||
+    normalised.startsWith("images/agenda/");
+
+  if (isPublicStaticImage) {
+    return `${BASE_URL}/${normalised}`;
   }
 
-  // 2. Handle relative paths (e.g., "/storage/img.png" or "img.png")
-  // Remove leading slash if it exists
-  let cleanPath = path.startsWith('/') ? path.substring(1) : path;
-  
-  // If the path already includes 'storage/', don't add it again
-  if (cleanPath.startsWith('storage/')) {
-      return `http://localhost:8000/${cleanPath}`;
-  }
-
-  // Otherwise, add the full local storage prefix
-  return `http://localhost:8000/storage/${cleanPath}`; 
+  return `${BASE_URL}/storage/${normalised}`;
 };
 
+
 export const Card = ({ card, onClick, className }: CardProps) => {
+  const [imgError, setImgError] = useState(false);
+  const imageUrl = getImageUrl(card.image_path);
+
   return (
     <div
       onClick={onClick}
       className={`flex h-[19rem] min-w-40 flex-col items-center justify-center rounded-md border bg-white shadow-sm transition-all hover:shadow-md ${className}`}
     >
-      <div className="h-40 w-full overflow-hidden p-2">
-        <img
-          src={getImageUrl(card.image_path)}
-          alt={card.name}
-          className="h-full w-full object-contain"
-          loading="lazy"
-          onError={(e) => {
-            // Fallback if the image is physically missing from the server
-            e.currentTarget.src = "https://via.placeholder.com/150?text=Image+Missing";
-          }}
-        />
+      <div className="h-40 w-full overflow-hidden p-2 flex items-center justify-center">
+        {imageUrl && !imgError ? (
+          <img
+            src={imageUrl}
+            alt={card.name}
+            className="h-full w-full object-contain"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-1 rounded-md bg-gray-100 text-gray-400">
+            <MdImage className="size-10" />
+            <span className="text-xs">No image</span>
+          </div>
+        )}
       </div>
       <div className="flex flex-1 items-center justify-center p-3 text-center">
         <p className="text-sm font-semibold text-gray-700">{card.name}</p>

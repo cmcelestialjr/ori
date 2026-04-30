@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MdImageNotSupported } from "react-icons/md";
 import { SdgAgendaType } from "../hooks/useGetSdgAgenda";
 import { FaPlus } from "react-icons/fa";
 import Modal from "../../shared/components/Modal";
@@ -9,7 +10,7 @@ import { FormData } from "./CreateResearchMonitoringForm";
 type SDGAgendaProps = {
   sdgAgenda: SdgAgendaType | undefined;
   control: Control<FormData>;
-  selectedFile: string | undefined;
+  // selectedFile: string | undefined;
 };
 
 
@@ -66,9 +67,8 @@ const SdgAgenda = ({ control, sdgAgenda }: SDGAgendaProps) => {
   return (
     <div className="flex w-full flex-col items-start justify-center">
       <p className="mb-5 text-gray-800">
-        Note: Your SDG and Agenda are pre-selected based on the selected
-        document from your uploaded files. You can remove or add more by
-        pressing the '+' button.
+        Please select the relevant SDG and Agenda for your research. You can
+        add more by pressing the '+' button.
       </p>
       <label
         htmlFor="sdg"
@@ -95,22 +95,29 @@ const SdgAgenda = ({ control, sdgAgenda }: SDGAgendaProps) => {
         onClose={() => setModalOpen({ sdg: false, agenda: false })}
         title="Select the best Sustainable Development Growth"
       >
-        <div className="grid grid-cols-4 gap-5">
-          {sdg &&
-            sdg.map((card) => (
-
-                <Card 
+        {sdg && sdg.length > 0 ? (
+          <div className="grid grid-cols-4 gap-5">
+            {sdg.map((card) => (
+              <Card
                 key={card.id}
                 onClick={() => handleModalCardClick(card.id, true, false)}
                 card={card}
-                className={` cursor-pointer p-3 ${
-                  sdgField.value.some((sdg) => sdg === card.id)
+                className={`cursor-pointer p-3 ${
+                  sdgField.value.some((s) => s === card.id)
                     ? "border-blue-500"
                     : "border-gray-500"
-                }`} />
-                
+                }`}
+              />
             ))}
-        </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-3 py-16 text-gray-400">
+            <MdImageNotSupported className="size-16" />
+            <p className="text-center text-sm font-medium">
+              No SDG items available yet.<br />Please contact your administrator to add SDG mappings.
+            </p>
+          </div>
+        )}
       </Modal>
 
       <label
@@ -138,20 +145,29 @@ const SdgAgenda = ({ control, sdgAgenda }: SDGAgendaProps) => {
         onClose={() => setModalOpen({ sdg: false, agenda: false })}
         title="Select the best Agenda"
       >
-        <div className="grid grid-cols-4 gap-5">
-          {agenda &&
-            agenda.map((card) => (
-                <Card 
+        {agenda && agenda.length > 0 ? (
+          <div className="grid grid-cols-4 gap-5">
+            {agenda.map((card) => (
+              <Card
                 key={card.id}
                 onClick={() => handleModalCardClick(card.id, false, true)}
                 card={card}
-                className={` cursor-pointer p-3 ${
-                  agendaField.value.some((agenda) => agenda === card.id)
+                className={`cursor-pointer p-3 ${
+                  agendaField.value.some((a) => a === card.id)
                     ? "border-blue-500"
                     : "border-gray-500"
-                }`} />
+                }`}
+              />
             ))}
-        </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-3 py-16 text-gray-400">
+            <MdImageNotSupported className="size-16" />
+            <p className="text-center text-sm font-medium">
+              No Agenda items available yet.<br />Please contact your administrator to add Agenda mappings.
+            </p>
+          </div>
+        )}
       </Modal>
     </div>
   );

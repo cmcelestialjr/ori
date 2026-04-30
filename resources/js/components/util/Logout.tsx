@@ -2,8 +2,8 @@ import api from "../api/axios";
 import { FiLogOut } from "react-icons/fi";
 import { useState } from "react";
 import LoadingSpinner from "../shared/components/LoadingSpinner";
-//import { useNavigate } from "react-router-dom";
-//import { useAuthContextProvider } from "../../hooks/hooks";
+import { useNavigate } from "react-router-dom";
+import { useAuthContextProvider } from "../../hooks/hooks";
 import { useToast } from "../../hooks/useToast";
 import ConfirmationModal from "../shared/components/ConfirmationModal";
 
@@ -11,20 +11,17 @@ const Logout = ({ style }: { style: string }) => {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  //const navigate = useNavigate();
- // const { setUser, setActiveRole } = useAuthContextProvider();
+  const navigate = useNavigate();
+  const { setUser, setActiveRole } = useAuthContextProvider();
 
   const handleLogout = async () => {
     setIsLoading(true);
     try {
       await api.post("/api/logout");
       toast.success("Successfully logged out.");
-      sessionStorage.removeItem("auth-user");
-      sessionStorage.removeItem("active-role");
-      //navigate("/login");
-      const targetUrl = `${window.location.protocol}//${window.location.hostname}/systems`;      
-      window.location.href = targetUrl;
-
+      setUser(null);
+      setActiveRole(null);
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {

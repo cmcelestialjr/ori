@@ -1,3 +1,4 @@
+// In your api/axios.ts file
 import axios from "axios";
 
 let initialLoadCompleted = false;
@@ -23,36 +24,13 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Global Error Handler
 api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        // If the user is unauthorized or their session expired...
-        if (error.response && (error.response.status === 401 || error.response.status === 419)) {
-            
-            // 1. Check their role BEFORE we delete it!
-            // (Make sure 'faculty' matches the exact string you use for regular users)
-            const activeRole = sessionStorage.getItem('active-role');
-            
-            // 2. Clear local storage
-            sessionStorage.removeItem('auth-user');
-            sessionStorage.removeItem('active-role');
-            
-            // 3. Redirect based on their role
-            if (activeRole === 'faculty') {
-                // If they are a regular user, send them to the Central System SSO
-                const baseUrl = import.meta.env.VITE_CENTRAL_SYSTEM_URL;
-                const centralUrl = baseUrl ? `${baseUrl}/systems` : '/login';
-                
-                window.location.href = centralUrl; 
-            } else {
-                // If they are an Admin, Coordinator, or unknown, keep them local
-                window.location.href = '/login';
-            }
-        }
-        
-        return Promise.reject(error);
-    }
+  (response) => response,
+  (error) => {
+    // Don't do full-page redirect on 401/419 - let ProtectedRoute handle auth
+    // via React Router (no refresh). Full redirect caused unwanted auto-refresh.
+    return Promise.reject(error);
+  },
 );
 
 export default api;
