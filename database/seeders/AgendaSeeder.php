@@ -15,31 +15,31 @@ class AgendaSeeder extends Seeder
      */
     public function run()
     {
-        $agendaMapping = collect([
-            'Teacher Education',
-            'Hotel and Hospitality Industry',
-            'Management, Politics, and Governance',
-            'Information, Communication, Technology, and Library Science',
-            'Biological Science',
-            'Physical Science',
-            'Ecological Processes',
-            'Global Issues and Concerns',
-            'Health and Nutrition',
-            'Social Services',
-            'Gender and Development',
-            'Culture and the Arts',
-            'Technical, Vocational, and Skills Studies',
-            'Business and Entrepreneurship',
-            'Linguistics',
-            'Media Communication, Technology, and Culture',
-        ]);
+        $agendas = [
+            ['name' => 'Teacher Education', 'image' => 'images/agenda/classroom.png'],
+            ['name' => 'Hotel and Hospitality Industry', 'image' => 'images/agenda/hotel.png'],
+            ['name' => 'Management, Politics, and Governance', 'image' => 'images/agenda/politician.png'],
+            ['name' => 'Information, Communication, Technology, and Library Science', 'image' => 'images/agenda/telecommunication.png'],
+            ['name' => 'Biological Science', 'image' => 'images/agenda/dna.png'],
+            ['name' => 'Physical Science', 'image' => 'images/agenda/atom.png'],
+            ['name' => 'Ecological Processes', 'image' => 'images/agenda/biodegradable.png'],
+            ['name' => 'Global Issues and Concerns', 'image' => 'images/agenda/earth.png'],
+            ['name' => 'Health and Nutrition', 'image' => 'images/agenda/care.png'],
+            ['name' => 'Social Services', 'image' => 'images/agenda/plan.png'],
+            ['name' => 'Gender and Development', 'image' => 'images/agenda/equality.png'],
+            ['name' => 'Culture and the Arts', 'image' => 'images/agenda/masks.png'],
+            ['name' => 'Technical, Vocational, and Skills Studies', 'image' => 'images/agenda/vocational.png'],
+            ['name' => 'Business and Entrepreneurship', 'image' => 'images/agenda/entrepreneurship.png'],
+            ['name' => 'Linguistics', 'image' => 'images/agenda/linguistic.png'],
+            ['name' => 'Media Communication, Technology, and Culture', 'image' => 'images/agenda/social-media.png'],
+        ];
 
-        $agendaMapping->each(function($agenda) {
+        foreach ($agendas as $agenda) {
             AgendaMapping::create([
-                'name' => $agenda,
-                'image_path' => Str::slug($agenda) . '.png',
+                'name' => $agenda['name'],
+                'image_path' => $agenda['image'],
             ]);
-        });
+        }
 
     }
 }
