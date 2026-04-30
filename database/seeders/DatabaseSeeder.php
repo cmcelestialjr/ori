@@ -57,18 +57,21 @@ class DatabaseSeeder extends Seeder
             'email' => 'coordinator@example.com',
             'password' => 'coordinator',
         ])->syncRoles(RoleEnum::RESEARCH_COORDINATOR);
-        User::factory()->create([
-            'fname' => 'Cristobal',
-            'lname' => 'Rabuya',
-            'mi' => 'A',
-            'suffix' => 'Jr.',
-            'unit' => 'IT',
-            'college' => 'CAS',
-            'academic_rank' => 'PROFESSOR1',
-            'email' => 'faculty@example.com',
-            'password' => 'faculty',
-        ]);
-        User::factory(17)->create();
+        // User::factory()->create([
+        //     'fname' => 'Cristobal',
+        //     'lname' => 'Rabuya',
+        //     'mi' => 'A',
+        //     'suffix' => 'Jr.',
+        //     'unit' => 'IT',
+        //     'college' => 'CAS',
+        //     'academic_rank' => 'PROFESSOR1',
+        //     'email' => 'faculty@example.com',
+        //     'password' => 'faculty',
+        // ]);
+        
+        // Uncomment to generate more random users:
+        // User::factory(17)->create();
+        
         //  \App\Models\SdgMapping::factory(10)->create();
         //  \App\Models\SdgMapping::factory(10)->create();
         // \App\Models\AgendaMapping::factory(10)->create();
@@ -77,8 +80,10 @@ class DatabaseSeeder extends Seeder
         // \App\Models\SocioEconomicObjective::factory(5)->create();
 
         //$this->call(PresentedResearchProdSeeder::class);
-        for ($i = 0; $i < 100; $i++) {
-            $this->call(ResearchMonitoringFormSeeder::class);
-        }
+        
+        // Uncomment to generate 100 mock monitoring forms:
+        // for ($i = 0; $i < 100; $i++) {
+        //     $this->call(ResearchMonitoringFormSeeder::class);
+        // }
     }
 }
