@@ -98,59 +98,59 @@ trait useGeminiService {
         //  // --- END OF BYPASS ---
 
         // $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=' . env('GEMINI_API_KEY');
-        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . env('GEMINI_API_KEY');
+    //     $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . env('GEMINI_API_KEY');
 
 
 
-        $mimeType = mime_content_type($path);
-        $base64Image = base64_encode(file_get_contents($path));
+    //     $mimeType = mime_content_type($path);
+    //     $base64Image = base64_encode(file_get_contents($path));
 
 
-        $response = Http::timeout(120)->post($url, [
-            'contents' => [
-                [
-                    'parts' => [
-                        ['text' => $prompt],
-                        [
-                            'inlineData' => [
-                                'mimeType' => $mimeType,
-                                'data' => $base64Image
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ]);
+    //     $response = Http::timeout(120)->post($url, [
+    //         'contents' => [
+    //             [
+    //                 'parts' => [
+    //                     ['text' => $prompt],
+    //                     [
+    //                         'inlineData' => [
+    //                             'mimeType' => $mimeType,
+    //                             'data' => $base64Image
+    //                         ]
+    //                     ]
+    //                 ]
+    //             ]
+    //         ]
+    //     ]);
 
 
-        if ($response->failed()) {
-            $errorBody = $response->body();
-            throw new Exception("Gemini API Error: " . $response->body());
-        }
+    //     if ($response->failed()) {
+    //         $errorBody = $response->body();
+    //         throw new Exception("Gemini API Error: " . $response->body());
+    //     }
 
-       return $response->json('candidates.0.content.parts.0.text');
+    //    return $response->json('candidates.0.content.parts.0.text');
     }
 
     public function TextGenerate($data, $prompt)
     {
         // return "This is a mock text response for testing purposes.";
         // $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=' . env('GEMINI_API_KEY');
-        $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . env('GEMINI_API_KEY');
-        $response = Http::timeout(120)->post($url, [
-            'contents' => [
-                [
-                    'parts' => [
-                        ['text' => $data . "\n\n" . $prompt]
-                    ]
-                ]
-            ]
-        ]);
+        // $url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' . env('GEMINI_API_KEY');
+        // $response = Http::timeout(120)->post($url, [
+        //     'contents' => [
+        //         [
+        //             'parts' => [
+        //                 ['text' => $data . "\n\n" . $prompt]
+        //             ]
+        //         ]
+        //     ]
+        // ]);
 
-        if ($response->failed()) {
-            throw new Exception("Gemini API Error: " . $response->body());
-        }
+        // if ($response->failed()) {
+        //     throw new Exception("Gemini API Error: " . $response->body());
+        // }
 
-        return $response->json('candidates.0.content.parts.0.text');
+        // return $response->json('candidates.0.content.parts.0.text');
     }
 
 }

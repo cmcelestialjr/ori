@@ -8,12 +8,12 @@ use App\Models\PresentedResearchProduction;
 use App\Models\ResearchProduction;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\useGeminiService;
+// use App\Traits\useGeminiService;
 use App\Traits\HttpResponses;
 
 trait AutoFillService {
 
-    use useGeminiService;
+    // use useGeminiService;
     use HttpResponses;
 
     public function presentedResearchProduction($data, $form)

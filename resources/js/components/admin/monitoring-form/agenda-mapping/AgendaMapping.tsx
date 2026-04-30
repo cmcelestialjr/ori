@@ -4,7 +4,7 @@ import api from "../../../api/axios";
 
 // --- FIX: Robust Helper to fix ALL broken URLs ---
 const getImageUrl = (path: string | null | undefined) => {
-  if (!path) return "https://via.placeholder.com/150";
+  if (!path) return "https://placehold.co/150x150?text=Add+Image";
   
   if (path.startsWith("http")) {
       if (path.includes("localhost") || path.includes("127.0.0.1")) {
@@ -87,7 +87,7 @@ export default function AgendaMapping() {
                           loading="lazy" 
                           className="h-auto max-w-[100px] cursor-pointer rounded-md object-cover hover:opacity-80"
                           onError={(e) => {
-                             e.currentTarget.src = "https://via.placeholder.com/150?text=Add+Image";
+                             e.currentTarget.src = "https://placehold.co/150x150?text=Add+Image";
                           }}
                         />
                       </Link>
